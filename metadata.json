@@ -1,0 +1,6 @@
+{
+  "name": "Zambia CDF Tracker",
+  "description": "Live Transparency Portal for tracking every Kwacha of Zambia's Constituency Development Fund (CDF). Features real-time projects register, constituency transparency rankings, interactive analytics, anonymous reporting, community project requests, and admin controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

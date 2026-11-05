@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Zambia CDF project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "constituency": { "type": "string" },
+        "province": { "type": "string" },
+        "sector": { "type": "string" },
+        "budget": { "type": "number" },
+        "spent": { "type": "number" },
+        "pct": { "type": "number" },
+        "status": { "type": "string" },
+        "mp": { "type": "string" }
+      },
+      "required": ["id", "name", "constituency", "province", "sector", "budget", "spent", "pct", "status", "mp"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "CDF project report/complaint",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "constituency": { "type": "string" },
+        "type": { "type": "string" },
+        "project": { "type": "string" },
+        "amount": { "type": "number" },
+        "contact": { "type": "string" },
+        "anonymous": { "type": "boolean" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "description", "constituency", "type"]
+    },
+    "ProjectRequest": {
+      "title": "ProjectRequest",
+      "description": "CDF project proposal request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "cost": { "type": "number" },
+        "beneficiaries": { "type": "string" },
+        "constituency": { "type": "string" },
+        "sector": { "type": "string" },
+        "submittedBy": { "type": "string" },
+        "contact": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "name", "description", "constituency"]
+    },
+    "PaymentMethod": {
+      "title": "PaymentMethod",
+      "description": "CDF donation payment method",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "color": { "type": "string" },
+        "detailLabel": { "type": "string" },
+        "detail": { "type": "string" },
+        "note": { "type": "string" }
+      },
+      "required": ["id", "name", "icon", "color", "detailLabel", "detail"]
+    },
+    "Constituency": {
+      "title": "Constituency",
+      "description": "Zambia constituency general info",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "province": { "type": "string" },
+        "mp": { "type": "string" },
+        "score": { "type": "number" },
+        "allocated": { "type": "number" }
+      },
+      "required": ["name", "province", "mp", "score", "allocated"]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "Grant, Bursary, or Agricultural Support application",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "applicantName": { "type": "string" },
+        "nrc": { "type": "string" },
+        "contact": { "type": "string" },
+        "email": { "type": "string" },
+        "constituency": { "type": "string" },
+        "amount": { "type": "string" },
+        "purpose": { "type": "string" },
+        "status": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "category", "applicantName", "nrc", "contact", "constituency", "amount", "purpose", "status", "date"]
+    },
+    "LiveUpdate": {
+      "title": "LiveUpdate",
+      "description": "Log of admin changes and platform activity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "adminName": { "type": "string" },
+        "actionType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "targetName": { "type": "string" },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "adminName", "actionType", "description", "timestamp"]
+    }
+  },
+  "firestore": {
+    "projects": {
+      "schema": "Project",
+      "description": "Collection of projects"
+    },
+    "reports": {
+      "schema": "Report",
+      "description": "Collection of reports"
+    },
+    "requests": {
+      "schema": "ProjectRequest",
+      "description": "Collection of project requests"
+    },
+    "paymentMethods": {
+      "schema": "PaymentMethod",
+      "description": "Collection of payment methods"
+    },
+    "constituencies": {
+      "schema": "Constituency",
+      "description": "Collection of constituencies"
+    },
+    "applications": {
+      "schema": "Application",
+      "description": "Collection of support applications"
+    },
+    "updates": {
+      "schema": "LiveUpdate",
+      "description": "Collection of real-time audit logs and live changes"
+    }
+  }
+}
