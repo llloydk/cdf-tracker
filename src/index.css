@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  
+  --color-ink: #0f172a;       /* slate-900 */
+  --color-forest: #1e293b;    /* slate-800 */
+  --color-leaf: #4f46e5;      /* indigo-600 */
+  --color-sage: #6366f1;      /* indigo-500 */
+  --color-pale: #e0e7ff;      /* indigo-100 */
+  --color-gold: #f59e0b;      /* amber-500 */
+  --color-gl: #fef08a;        /* yellow-200 */
+  --color-gp: #f0f9ff;        /* sky-50 */
+  --color-red: #ef4444;       /* red-500 */
+  --color-rp: #fef2f2;        /* red-50 */
+  --color-bg: #f8fafc;        /* slate-50 */
+  --color-mu: #64748b;        /* slate-500 */
+  --color-bo: #e2e8f0;        /* slate-200 */
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-bo);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-mu);
+}
