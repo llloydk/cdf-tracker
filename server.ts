@@ -157,7 +157,7 @@ A: Simple projects (borehole, classroom block) typically 3–6 months. Roads and
 async function startServer() {
   const app = express();
   const PORT = 3000;
-  app.use(express.json());
+  app.use(express.json({ limit: '5mb' }));
 
   // Health check
   app.get("/api/health", (req, res) => res.json({ status: "ok" }));
@@ -273,10 +273,10 @@ ${liveStats}`;
 
   // ── 2. AI INSIGHTS ENDPOINT ────────────────────────────────────────────────
   app.post("/api/gemini/insights", async (req, res) => {
-    const { context = {} } = req.body;
-    const projects: any[] = context.projects || [];
-    const reports: any[]  = context.reports  || [];
-    const requests: any[] = context.requests || [];
+    const bodyContext = req.body?.context && typeof req.body.context === 'object' ? req.body.context : req.body || {};
+    const projects: any[] = bodyContext.projects || [];
+    const reports: any[]  = bodyContext.reports  || [];
+    const requests: any[] = bodyContext.requests || [];
 
     const totalBudget = projects.reduce((s: number, p: any) => s + (Number(p.budget)||0), 0);
     const totalSpent  = projects.reduce((s: number, p: any) => s + (Number(p.spent) ||0), 0);
@@ -353,7 +353,7 @@ Keep language clear and professional. No markdown headings with # symbols.`;
 
   // ── 4. ANOMALY DETECTION ENDPOINT ─────────────────────────────────────────
   app.post("/api/gemini/anomaly-detection", async (req, res) => {
-    const { projects = [], reports = [] } = req.body;
+    const { projects = [], reports = [], applications = [] } = req.body;
 
     const prompt = `${CDF_KNOWLEDGE_BASE}
 
@@ -361,11 +361,12 @@ You are a forensic auditor at the Anti-Corruption Commission (ACC) of Zambia con
 
 PROJECTS DATA: ${JSON.stringify(projects)}
 WHISTLEBLOWER REPORTS: ${JSON.stringify(reports)}
+SUPPORT APPLICATIONS (GRANTS / BURSARIES / AGRIC): ${JSON.stringify(applications)}
 
-Identify the TOP 3-5 highest risk anomalies. For each one:
+Identify the TOP 3-5 highest risk anomalies (including duplicate NRCs, phantom applicants, stalled funded projects, or whistleblower clusters). For each one:
 🚨 RISK LEVEL: Critical / High / Medium
-📍 ITEM: Specific project ID, name, or constituency
-⚠️ FLAG: What the anomaly is (e.g. stalled with funds released, budget gap, cluster of reports)
+📍 ITEM: Specific project ID, application ID, name, or constituency
+⚠️ FLAG: What the anomaly is (e.g. duplicate NRC, stalled with funds released, budget gap, cluster of reports)
 ✅ ACTION: Specific recommended action for the CDFC or ACC
 
 Base findings strictly on the data provided. Use real IDs and names. No generic statements.`;
@@ -381,7 +382,13 @@ Base findings strictly on the data provided. Use real IDs and names. No generic 
       console.warn("Anomaly Detection API error, using local fallback:", error);
       const stalled = (projects as any[]).filter(p => p.status === 'stalled');
       const accReports = (reports as any[]).filter((r: any) => r.acc);
-      res.json({ text: `🚨 RISK LEVEL: High\n📍 ITEM: ${stalled.length} stalled project(s) detected with funds already released\n⚠️ FLAG: Funds disbursed but zero progress — classic ghost project pattern\n✅ ACTION: Dispatch independent engineers for site inspection; issue contractor show-cause notices\n\n🚨 RISK LEVEL: High\n📍 ITEM: ${accReports.length} reports escalated to ACC\n⚠️ FLAG: Citizens have flagged direct ACC-level corruption concerns\n✅ ACTION: ACC to initiate formal forensic audit of named constituencies\n\n⚠️ RISK LEVEL: Medium\n📍 ITEM: Budget utilisation below 50% in some tracked projects\n⚠️ FLAG: Large gap between allocated and spent funds suggests procurement delays or diversion\n✅ ACTION: CDFC finance sub-committee to review procurement timelines and contractor payment records` });
+      const nrcCounts = new Map<string, number>();
+      (applications as any[]).forEach((a: any) => {
+        const key = String(a?.nrc || '').trim().toLowerCase();
+        if (key) nrcCounts.set(key, (nrcCounts.get(key) || 0) + 1);
+      });
+      const dupNrcs = [...nrcCounts.entries()].filter(([, count]) => count > 1).length;
+      res.json({ text: `🚨 RISK LEVEL: High\n📍 ITEM: ${stalled.length} stalled project(s) detected with funds already released\n⚠️ FLAG: Funds disbursed without matching completion — ghost/delayed project indicator\n✅ ACTION: Dispatch independent engineers for site inspection; issue contractor show-cause notices\n\n🚨 RISK LEVEL: High\n📍 ITEM: ${accReports.length} reports escalated to ACC | ${dupNrcs} duplicate NRC claim(s) across ${applications.length} applications\n⚠️ FLAG: Citizens have flagged direct ACC-level corruption or overlapping beneficiary NRCs\n✅ ACTION: ACC to initiate formal forensic audit of named constituencies and freeze duplicate claims\n\n⚠️ RISK LEVEL: Medium\n📍 ITEM: Budget utilisation review across ${projects.length} tracked projects\n⚠️ FLAG: Large gap between allocated and spent funds suggests procurement delays or diversion\n✅ ACTION: CDFC finance sub-committee to review procurement timelines and contractor payment records` });
     }
   });
 

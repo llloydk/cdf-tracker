@@ -12,9 +12,19 @@
         "sector": { "type": "string" },
         "budget": { "type": "number" },
         "spent": { "type": "number" },
+        "baseSpent": { "type": "number" },
+        "remaining": { "type": "number" },
         "pct": { "type": "number" },
+        "transparencyPct": { "type": "number" },
         "status": { "type": "string" },
-        "mp": { "type": "string" }
+        "mp": { "type": "string" },
+        "contractor": { "type": "string" },
+        "dailyLogs": { "type": "array" },
+        "lastUpdated": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "flagged": { "type": "boolean" },
+        "flaggedAt": { "type": "string" }
       },
       "required": ["id", "name", "constituency", "province", "sector", "budget", "spent", "pct", "status", "mp"]
     },
@@ -96,7 +106,9 @@
         "amount": { "type": "string" },
         "purpose": { "type": "string" },
         "status": { "type": "string" },
-        "date": { "type": "string" }
+        "date": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
       },
       "required": ["id", "category", "applicantName", "nrc", "contact", "constituency", "amount", "purpose", "status", "date"]
     },
